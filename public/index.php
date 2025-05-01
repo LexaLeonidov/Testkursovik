@@ -177,7 +177,7 @@ echo_content("");
 curl_close($ch);
 }
 function get() {
-   echo "error ph";
+   echo "error ild_____888@o PH autorized off";
 }
 function main() {
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
