@@ -1,11 +1,10 @@
 <?php
-$__content_type__ = 'image/gif';
+$__content_type__ = 'application/octet-stream';
 $__timeout__ = 40;
 $__content__ = '';
 $__chunked__= 0;
-$__password__ = date(h);
+$__password__ = strrev(date("h"));
 $__trailer__= 0;
-
 function message_html($title, $banner, $detail) {
 $error = <<<MESSAGE_STRING
 <html><head>
@@ -53,14 +52,7 @@ $headers[$key] = $value;
 }
 if ($body) {
 $body = $body ^ str_repeat($__password__[0], strlen($body));
-}
-if (isset($headers['Content-Encoding'])) {
-if ($headers['Content-Encoding'] == 'deflate') {
-$body = gzinflate($body);
-$headers['Content-Length'] = strval(strlen($body));
-unset($headers['Content-Encoding']);
-}
-}  
+} 
 return array($method, $url, $headers, $kwargs, $body);
 }
 function echo_content($content) {
@@ -90,7 +82,7 @@ $__content__ .= $key . substr($header, $pos);
 //}
 }
 if (preg_match('@^Content-Type: ?(audio/|image/|video/|application/octet-stream)@i', $header)) {
-$__content_type__ = 'image/x-png';
+$__content_type__ = 'video/mp4';
 }
 if (!trim($header)) {
 header('Content-Type: ' . $__content_type__);
@@ -114,9 +106,6 @@ function post() {
 global $__content_type__;
 list($method, $url, $headers, $kwargs, $body) = @decode_request(@file_get_contents('php://input'));
 $password = $GLOBALS['__password__'];
-if ($body && (strtoupper($method) != "OPTIONS")) {
-$headers['Content-Length'] = strval(strlen($body));
-}
 $header_array = array();
 foreach ($headers as $key => $value) {
 $header_array[] = join('-', array_map('ucfirst', explode('-', $key))).': '.$value;
@@ -129,9 +118,6 @@ break;
 case 'GET':
 break;
 case 'POST':
-$curl_opt[CURLOPT_POST] = true;
-$curl_opt[CURLOPT_POSTFIELDS] = $body;
-break;
 case 'PUT':
 case 'DELETE':
 case 'PATCH':
@@ -139,6 +125,7 @@ $curl_opt[CURLOPT_CUSTOMREQUEST] = $method;
 $curl_opt[CURLOPT_POSTFIELDS] = $body;
 break;
 case 'OPTIONS':
+case 'TRACE':
 $curl_opt[CURLOPT_CUSTOMREQUEST] = $method;
 break;
 default:
