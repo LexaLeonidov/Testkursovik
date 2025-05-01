@@ -1,4 +1,5 @@
 <?php
+set_time_limit(60);
 $__content_type__ = 'application/octet-stream';
 $__timeout__ = 40;
 $__content__ = '';
@@ -77,9 +78,7 @@ if ($pos == false) {
 $__content__ .= $header;
 } else {
 $key = join('-', array_map('ucfirst', explode('-', substr($header, 0, $pos))));
-//if ($key != 'Transfer-Encoding') {
 $__content__ .= $key . substr($header, $pos);
-//}
 }
 if (preg_match('@^Content-Type: ?(audio/|image/|video/|application/octet-stream)@i', $header)) {
 $__content_type__ = 'video/mp4';
@@ -141,8 +140,8 @@ $curl_opt[CURLOPT_HEADERFUNCTION] = 'curl_header_function';
 $curl_opt[CURLOPT_WRITEFUNCTION]  = 'curl_write_function';
 $curl_opt[CURLOPT_FAILONERROR]= false;
 $curl_opt[CURLOPT_FOLLOWLOCATION] = false;
-$curl_opt[CURLOPT_CONNECTTIMEOUT] = 20;
-$curl_opt[CURLOPT_TIMEOUT]= 20;
+$curl_opt[CURLOPT_CONNECTTIMEOUT] = 42;
+$curl_opt[CURLOPT_TIMEOUT]= 18;
 $curl_opt[CURLOPT_SSL_VERIFYPEER] = false;
 $curl_opt[CURLOPT_SSL_VERIFYHOST] = false;
 $ch = curl_init($url);
